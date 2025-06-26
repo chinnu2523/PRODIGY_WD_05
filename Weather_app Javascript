@@ -1,0 +1,121 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const cityInput = document.getElementById('city-input');
+    const searchBtn = document.getElementById('search-btn');
+    const weatherDisplay = document.getElementById('weather-display');
+
+    // Replace with your actual API key from OpenWeatherMap
+    const apiKey = 'YOUR_API_KEY';
+    const apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+
+    async function fetchWeather(city) {
+        if (!city) {
+            weatherDisplay.innerHTML = '<p class="error-message">Please enter a city name.</p>';
+            weatherDisplay.classList.add('visible');
+            return;
+        }
+
+        const url = `${apiUrl}?q=${city}&appid=${apiKey}&units=metric`; // units=metric for Celsius
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                // Check for 404 (city not found) and other errors
+                if (response.status === 404) {
+                    throw new Error('City not found. Please check the spelling.');
+                } else {
+                    throw new Error('Failed to fetch weather data. Please try again later.');
+                }
+            }
+            const data = await response.json();
+            displayWeather(data);
+        } catch (error) {
+            console.error('Error fetching weather:', error);
+            weatherDisplay.innerHTML = `<p class="error-message">${error.message}</p>`;
+            weatherDisplay.classList.add('visible');
+        }
+    }
+
+    function displayWeather(data) {
+        const { name, sys, main, weather, wind, clouds } = data;
+        const weatherDescription = weather[0] ? weather[0].description : 'N/A';
+        const temperature = main.temp;
+        const feelsLike = main.feels_like;
+        const humidity = main.humidity;
+        const pressure = main.pressure;
+        const windSpeed = wind.speed;
+        const cloudiness = clouds.all;
+        
+        const htmlContent = `
+            <h2 class="city-name">${name}, ${sys.country}</h2>
+            <p class="temperature">${Math.round(temperature)}°C</p>
+            <p class="description">${weatherDescription}</p>
+            <div class="details">
+                <div class="detail-item">
+                    <strong>Feels Like</strong>
+                    <span>${Math.round(feelsLike)}°C</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Humidity</strong>
+                    <span>${humidity}%</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Wind Speed</strong>
+                    <span>${windSpeed} m/s</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Cloudiness</strong>
+                    <span>${cloudiness}%</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Pressure</strong>
+                    <span>${pressure} hPa</span>
+                </div>
+            </div>
+        `;
+
+        weatherDisplay.innerHTML = htmlContent;
+        weatherDisplay.classList.add('visible');
+    }
+
+    function handleSearch() {
+        const city = cityInput.value.trim();
+        fetchWeather(city);
+    }
+
+    // Event listener for the search button
+    searchBtn.addEventListener('click', handleSearch);
+
+    // Event listener for 'Enter' key in the input field
+    cityInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    });
+
+    // Optional: Fetch weather for user's current location on load
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const locationUrl = `${apiUrl}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+            fetch(locationUrl)
+                .then(response => response.json())
+                .then(data => {
+                    displayWeather(data);
+                    cityInput.value = data.name; // Pre-fill the input with the city name
+                })
+                .catch(error => {
+                    console.error('Error fetching location weather:', error);
+                    weatherDisplay.innerHTML = '<p class="error-message">Could not fetch weather for your location.</p>';
+                    weatherDisplay.classList.add('visible');
+                });
+        }, error => {
+            console.error('Geolocation error:', error);
+            // Handle cases where the user denies location access
+            weatherDisplay.innerHTML = '<p class="initial-message">Please enter a city to get the weather.</p>';
+            weatherDisplay.classList.remove('visible');
+        });
+    } else {
+        console.log('Geolocation is not supported by this browser.');
+    }
+});
