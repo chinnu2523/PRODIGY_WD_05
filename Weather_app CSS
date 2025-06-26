@@ -1,0 +1,138 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #0b1a2b; /* Dark blue background */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+}
+
+.weather-container {
+    background: #1c2e4a; /* Slightly lighter dark blue */
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    width: 90%;
+    max-width: 450px;
+}
+
+h1 {
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+    color: #4da6ff; /* Light blue accent */
+}
+
+.search-box {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    gap: 10px;
+}
+
+#city-input {
+    padding: 0.8rem 1rem;
+    border: none;
+    border-radius: 25px;
+    background: #2b3a53;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+    width: 70%;
+    transition: all 0.3s ease;
+}
+
+#city-input::placeholder {
+    color: #aaa;
+}
+
+#city-input:focus {
+    box-shadow: 0 0 0 3px #4da6ff;
+}
+
+#search-btn {
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 25px;
+    background: #4da6ff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#search-btn:hover {
+    background-color: #66b3ff;
+    transform: scale(1.05);
+}
+
+.weather-info {
+    text-align: left;
+    margin-top: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.weather-info.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.initial-message {
+    font-style: italic;
+    color: #aaa;
+    text-align: center;
+}
+
+.city-name {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.temperature {
+    font-size: 4rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    color: #f7d23d; /* Yellow accent for temp */
+}
+
+.description {
+    font-size: 1.5rem;
+    text-transform: capitalize;
+    margin-bottom: 1rem;
+}
+
+.details {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    gap: 15px;
+}
+
+.detail-item {
+    background: #2b3a53;
+    padding: 1rem;
+    border-radius: 10px;
+    flex-basis: 45%;
+    min-width: 150px;
+    text-align: center;
+}
+
+.detail-item strong {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #9cdbff;
+}
+
+.error-message {
+    color: #ff6b6b; /* Red accent for errors */
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+}
